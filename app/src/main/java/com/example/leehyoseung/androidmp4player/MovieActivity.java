@@ -1,40 +1,26 @@
 package com.example.leehyoseung.androidmp4player;
 
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.Window;
 
 
 public class MovieActivity extends AppCompatActivity implements SurfaceHolder.Callback{
-
+    private MovieThread mVideoDecoder;
+    private static final String FILE_PATH = "/storage/extSdCard/video.mp4";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_movie);
-    }
+        SurfaceView surfaceView = new SurfaceView(this);
+        surfaceView.getHolder().addCallback(this);
+        setContentView(surfaceView);
+        mVideoDecoder = new MovieThread();
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_movie, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -44,10 +30,19 @@ public class MovieActivity extends AppCompatActivity implements SurfaceHolder.Ca
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width,	int height) {
+        if (mVideoDecoder != null){
+            if(mVideoDecoder.init(holder.getSurface(), FILE_PATH)){
+                mVideoDecoder.start();
+            }else{
+                mVideoDecoder = null;
+            }
+        }
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-
+        if(mVideoDecoder != null){
+            mVideoDecoder.close();
+        }
     }
 }

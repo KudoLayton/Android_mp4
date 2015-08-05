@@ -1,9 +1,16 @@
 package com.example.leehyoseung.androidmp4player;
 
+import android.content.Intent;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
+import static android.os.Environment.*;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -11,6 +18,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Button start = (Button)findViewById(R.id.button);
+        start.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(MainActivity.this, MovieActivity.class);
+                startActivity(intent);
+            }
+        });
+        TextView dir = (TextView)findViewById(R.id.showdir);
+        dir.setText(getExternalStorageDirectory().getAbsolutePath() + "/video.mp4");
     }
 
     @Override
@@ -34,4 +51,6 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }
